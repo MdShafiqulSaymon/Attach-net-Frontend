@@ -4,6 +4,7 @@ export interface SignupFormData {
   batch: string;
   sid: string;
   dept: string;
+  role:string;
   phone: string;
   password: string;
 }

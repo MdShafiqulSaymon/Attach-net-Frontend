@@ -8,114 +8,20 @@ import Dropdown from "./Dropdown";
 import AgreementCheckBox from "./AgreementCheckBox";
 import Text from "./atoms/Text";
 import { useAuthStore } from "../store/authStore";
-
-// Define interfaces
-interface FormData {
-  username: string;
-  email: string;
-  batch: string;
-  sid: string;
-  dept: string;
-  phone: string;
-  password: string;
-  confirm_password: string;
-}
-
-interface FormErrors {
-  [key: string]: string;
-}
-
-interface InputField {
-  id: keyof FormData;
-  type: string;
-  label: string;
-  placeholder: string;
-  required: boolean;
-  pattern?: string;
-}
+import { departments,userInputFields } from "../data/data";
+import { FormData,FormErrors } from "../types/UserType";
 
 const SignUpForm: React.FC = () => {
   const router = useRouter();
   const { signUp, isLoading, error: apiError } = useSignUp();
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [isAgreementChecked, setIsAgreementChecked] = useState(false);
-  const { setUser } = useAuthStore();
-
-  // Define all constants within the component
-  const departments = [
-    "Computer Science",
-    "Electrical Engineering",
-    "Mechanical Engineering",
-    "Civil Engineering",
-    "Chemical Engineering",
-  ];
-
-  const inputFields: InputField[] = [
-    {
-      id: "username",
-      type: "text",
-      label: "Name",
-      placeholder: "John Doe",
-      required: true,
-    },
-    {
-      id: "email",
-      type: "email",
-      label: "Email address",
-      placeholder: "john.doe@university.edu",
-      required: true,
-    },
-    {
-      id: "batch",
-      type: "text",
-      label: "Batch",
-      placeholder: "2019",
-      required: true,
-    },
-    {
-      id: "sid",
-      type: "text",
-      label: "Student ID",
-      placeholder: "1904083",
-      required: true,
-    },
-    {
-      id: "dept",
-      type: "text",
-      label: "Department",
-      placeholder: "CSE/EEE",
-      required: true,
-    },
-    {
-      id: "phone",
-      type: "tel",
-      label: "Phone number",
-      placeholder: "123-45-678",
-      pattern: "[0-9]{3}-[0-9]{2}-[0-9]{3}",
-      required: true,
-    },
-    {
-      id: "password",
-      type: "password",
-      label: "Password",
-      placeholder: "•••••••••",
-      required: true,
-    },
-    {
-      id: "confirm_password",
-      type: "password",
-      label: "Confirm password",
-      placeholder: "•••••••••",
-      required: true,
-    },
-  ];
-
-  // Initialize form data with typed structure
+  const {user, setUser } = useAuthStore();
   const [formData, setFormData] = useState<Partial<FormData>>({});
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   const validateField = (id: keyof FormData, value: string): string => {
-    if (!value && inputFields.find((field) => field.id === id)?.required) {
+    if (!value && userInputFields.find((field) => field.id === id)?.required) {
       return `${id.charAt(0).toUpperCase() + id.slice(1)} is required`;
     }
 
@@ -159,8 +65,6 @@ const SignUpForm: React.FC = () => {
 
   const handleInputChange = (id: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
-
-    // Clear error when user starts typing
     if (formErrors[id]) {
       setFormErrors((prev) => {
         const newErrors = { ...prev };
@@ -173,26 +77,20 @@ const SignUpForm: React.FC = () => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    // Reset errors
-    const newErrors: FormErrors = {};
 
-    // Validate all fields
+    const newErrors: FormErrors = {};
     Object.entries(formData).forEach(([id, value]) => {
       const error = validateField(id as keyof FormData, value as string);
       if (error) newErrors[id] = error;
     });
 
-    // Check password match
     if (formData.password !== formData.confirm_password) {
       newErrors.confirm_password = "Passwords don't match";
     }
-
-    // Check agreement
     if (!isAgreementChecked) {
       newErrors.agreement = "You must agree to the terms and conditions";
     }
 
-    // If there are errors, display them and return
     if (Object.keys(newErrors).length > 0) {
       setFormErrors(newErrors);
       return;
@@ -204,11 +102,13 @@ const SignUpForm: React.FC = () => {
         email: formData.email!,
         batch: formData.batch!,
         sid: formData.sid!,
+        role:user?.role||"student",
         dept: selectedOption || formData.dept!,
         phone: formData.phone!,
         password: formData.password!,
       });
-
+      console.log("Response: ",success)
+      
       if (success) {
         router.push("/signin");
       }
@@ -227,7 +127,7 @@ const SignUpForm: React.FC = () => {
       )}
 
       <div className="grid gap-6 mb-6 md:grid-cols-2 w-full">
-        {inputFields.map((field) =>
+        {userInputFields.map((field) =>
           field.id === "dept" ? (
             <div key={field.id} className="relative">
               <Dropdown
@@ -297,7 +197,7 @@ const SignUpForm: React.FC = () => {
                    overflow-hidden text-xl font-bold
                    ${isLoading ? "cursor-not-allowed opacity-70" : ""}`}
         onClick={handleSubmit}
-        disabled={isLoading}
+        disabel={isLoading}
       />
 
       {/* Loading Overlay */}
