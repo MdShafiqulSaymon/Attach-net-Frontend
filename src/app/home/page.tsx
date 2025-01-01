@@ -10,7 +10,7 @@ import Dropdown from '../components/Dropdown';
 
 export default function Home() {
   const [userType, setUserType] = useState('');
-  const {user,setUser}=useAuthStore()
+  const {setUser}=useAuthStore()
   const rolesOption=["Teacher", "Student","Admin"]
   const handleRoleSelect = (option: string) => {
     setUserType(option);
@@ -35,7 +35,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center h-screen w-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="welcome h-3/5 w-3/12 bg-transparent flex flex-col overflow-hidden rounded-lg border-2">
         <div className="w-full flex flex-col gap-8 items-center pt-8">
-          {/* Modern Tech Logo */}
+
           <AttachNetLogo/>
 
           <Text
@@ -49,7 +49,6 @@ export default function Home() {
             className="text-sm font-bold justify-items-start"
           />
 
-          {/* Dropdown */}
           <Dropdown
           label="Choose your role"
           options={rolesOption}
@@ -57,7 +56,6 @@ export default function Home() {
           className='w-4/5'
           />
 
-          {/* Get Started Button with variant colors */}
           <Button
             text="Get Started"
             className="relative mt-4 w-4/5 h-14 py-3 text-white rounded-lg transition-all duration-300 

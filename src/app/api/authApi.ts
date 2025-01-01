@@ -4,7 +4,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 export const authApi={
     singUp: async (formData:SignupFormData):Promise<ApiResponse>=>{
         try {
-            const response=await fetch(`${API_BASE_URL}/user/create`,{
+            const response=await fetch(`${API_BASE_URL}/api/auth/create`,{
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'

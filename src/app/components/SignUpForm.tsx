@@ -52,8 +52,6 @@ const SignUpForm: React.FC = () => {
   const handleDepartmentSelect = (option: string) => {
     setSelectedOption(option);
     setFormData((prev) => ({ ...prev, dept: option }));
-
-    // Clear department error if exists
     if (formErrors.dept) {
       setFormErrors((prev) => {
         const newErrors = { ...prev };
@@ -119,7 +117,6 @@ const SignUpForm: React.FC = () => {
 
   return (
     <form className="flex flex-col justify-center items-center relative max-w-4xl mx-auto p-6">
-      {/* API Error Display */}
       {apiError && (
         <div className="w-full p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800">
           {apiError}
@@ -200,7 +197,6 @@ const SignUpForm: React.FC = () => {
         disabel={isLoading}
       />
 
-      {/* Loading Overlay */}
       {isLoading && (
         <div className="absolute inset-0 bg-white/50 flex items-center justify-center rounded-lg">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
