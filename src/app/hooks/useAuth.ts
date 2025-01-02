@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { SignupFormData, ApiResponse } from "../types/AuthType";
-import { authApi } from "../api/authApi";
+import { authApi, LoginFormData } from "../api/authApi";
 import { useAuthStore } from "../store/authStore";
-export const useSignUp = () => {
+
+export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<String | null>(null);
   const { setUser } = useAuthStore();
+
   const validateForm = (data: SignupFormData) => {
     const errors: string[] = [];
     if (data.username.length < 3) {
@@ -29,6 +31,18 @@ export const useSignUp = () => {
 
     return errors;
   };
+
+  const validateLoginForm = (data: LoginFormData) => {
+    const errors: string[] = [];
+    if (!data.email.includes("@")) {
+      errors.push("Invalid email format");
+    }
+    if (!data.password) {
+      errors.push("Password is required");
+    }
+    return errors;
+  };
+
   const signUp = async (data: SignupFormData): Promise<boolean> => {
     try {
       setIsLoading(true);
@@ -54,8 +68,56 @@ export const useSignUp = () => {
     }
   };
 
+  const login = async (data: LoginFormData): Promise<boolean> => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Validate form data
+      const validationErrors = validateLoginForm(data);
+      if (validationErrors.length > 0) {
+        setError(validationErrors.join(", "));
+        return false;
+      }
+
+      // Call login API
+      const response = await authApi.login(data);
+      
+      if (response.success) {
+        // Update user state
+        return true;
+      }
+
+      setError(response.message || "Login failed");
+      return false;
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred"
+      );
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const logout = async (): Promise<void> => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      await authApi.logout();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Logout failed"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     signUp,
+    login,
+    logout,
     isLoading,
     error,
   };

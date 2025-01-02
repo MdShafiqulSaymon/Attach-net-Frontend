@@ -1,5 +1,5 @@
 "use client";
-import { useSignUp } from "../hooks/useSignup";
+import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Input from "./atoms/Input";
@@ -13,7 +13,7 @@ import { FormData,FormErrors } from "../types/UserType";
 
 const SignUpForm: React.FC = () => {
   const router = useRouter();
-  const { signUp, isLoading, error: apiError } = useSignUp();
+  const { signUp, isLoading, error: apiError } = useAuth();
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [isAgreementChecked, setIsAgreementChecked] = useState(false);
   const {user, setUser } = useAuthStore();
@@ -172,7 +172,7 @@ const SignUpForm: React.FC = () => {
         <span className="text-gray-600">Already have an Account?</span>
         <Text
           text="Sign In"
-          gradient="from-blue-500 via-purple-500 to-indigo-500"
+          gradient="bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500"
           className="text-sm font-bold cursor-pointer"
           onClick={() => router.push("/signin")}
         />

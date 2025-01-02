@@ -1,5 +1,5 @@
 import Layout from "../components/Layout";
-import StudentSignUp from "./StudentSignUp";
+import StudentSignUp from "./SignUp";
 
 export default function SignUp(){
     return(

@@ -1,28 +1,19 @@
-"use client";
-
-import React from 'react';
-
 interface TextProps {
-  text: string;
-  textColor?: string; // Allows text color customization
-  gradient?: string;  // Allows gradient customization
-  className?: string; // Additional custom classes
-  onClick?:()=>void;
+  text: string; // Use `string`, not `String`
+  className?: string;
+  gradient?: string;
+  onClick?: () => void;
 }
 
-const Text: React.FC<TextProps> = ({
-  text,
-  textColor,
-  gradient,
-  className,
-  onClick
-}) => {
+const Text: React.FC<TextProps> = ({ text, className, gradient, onClick }) => {
+  const gradientClass = gradient ? `bg-clip-text text-transparent ${gradient}` : "";
   return (
-    <h1
-      className={`z-10 font-bold text ${textColor} bg-gradient-to-r ${gradient} bg-clip-text text-transparent ${className}`} onClick={onClick}
+    <p
+      className={`${className} ${gradientClass}`}
+      onClick={onClick}
     >
       {text}
-    </h1>
+    </p>
   );
 };
 
