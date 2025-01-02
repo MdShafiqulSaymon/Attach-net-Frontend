@@ -1,4 +1,4 @@
-import { ApiResponse, SignupFormData } from "../types/AuthType";
+import { ApiResponse, LogInTokenResponse, SignupFormData } from "../types/AuthType";
 
 // Add these types to your AuthType.ts file
 export interface LoginFormData {
@@ -21,7 +21,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 export const authApi = {
     singUp: async (formData: SignupFormData): Promise<ApiResponse> => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/create`, {
+            const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -48,9 +48,9 @@ export const authApi = {
         }
     },
 
-    login: async (formData: LoginFormData): Promise<LoginResponse> => {
+    login: async (formData: LoginFormData): Promise<LogInTokenResponse> => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+            const response = await fetch(`${API_BASE_URL}/api/auth/signin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -60,22 +60,23 @@ export const authApi = {
 
             const result = await response.json();
 
+            console.log(result);
             // Create standardized response
-            const data: LoginResponse = {
-                success: response.ok,
-                message: response.ok ? 'Login successful' : (result.message || 'Login failed'),
-                data: result.data || result
+            const data: LogInTokenResponse = {
+                success: result.token? true: false,
+                token:result.token,
+                expiresIn:result.expiresIn
             };
+            console.log(data);
 
             if (!response.ok) {
                 throw new Error(result.message || 'Login failed');
             }
 
             // Store user data in localStorage or other state management
-            if (data.success && data.data) {
-                localStorage.setItem('user', JSON.stringify(data.data));
-                // Optionally store token if your API returns one
-                if (result.token) {
+            if (data.success) {
+               
+                if (data.token) {
                     localStorage.setItem('token', result.token);
                 }
             }

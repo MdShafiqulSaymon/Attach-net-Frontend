@@ -14,3 +14,9 @@ export interface ApiResponse {
   message: string;
   data?: any;
 }
+export interface LogInTokenResponse{
+  success: boolean;
+  token: string;
+  expiresIn: number;
+
+}

@@ -88,7 +88,7 @@ export const useAuth = () => {
         return true;
       }
 
-      setError(response.message || "Login failed");
+      setError("Login failed");
       return false;
     } catch (err) {
       setError(
